@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,15 @@
     "url": "https://gitlab.com/n3wbieatit-group/DBDaPT/issues"
   },
   "homepage": "https://gitlab.com/n3wbieatit-group/DBDaPT#readme",
+  "lint-staged": {
+    "*.{ts,js}": [
+      "esling --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yamls}": [
+      "prettier --write"
+    ]
+  },
   "dependencies": {
     "dotenv": "^17.2.2",
     "express": "^5.1.0"
