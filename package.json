@@ -28,7 +28,7 @@
   "homepage": "https://gitlab.com/n3wbieatit-group/DBDaPT#readme",
   "lint-staged": {
     "*.{ts,js}": [
-      "esling --fix",
+      "eslint --fix",
       "prettier --write"
     ],
     "*.{json,md,yml,yamls}": [
