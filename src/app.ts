@@ -1,5 +1,6 @@
-import express from 'express';
 import { config } from 'dotenv';
+import express from 'express';
+
 import healthRouter from './routes/health.router';
 import todosRouter from './routes/todos.router';
 
@@ -24,12 +25,12 @@ export function buildApp() {
   });
 
   // Ошибки
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   app.use(
     (
       err: unknown,
       _request: express.Request,
       response: express.Response,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _next: express.NextFunction,
     ) => {
       console.error(err);
