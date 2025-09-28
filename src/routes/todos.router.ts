@@ -23,8 +23,8 @@ router.post('/', (request, response) => {
   response.status(201).json(todo);
 });
 
-// Запрос POST на изменение статуса задачи по маршруту /todos/:id/toogle
-router.post('/:id/toogle', (request, response) => {
+// Запрос POST на изменение статуса задачи по маршруту /todos/:id/toggle
+router.post('/:id/toggle', (request, response) => {
   // Получение id задачи из запроса
   const id = Number(request.params.id);
   // Если число бесконечно, то возвращаем ошибку
