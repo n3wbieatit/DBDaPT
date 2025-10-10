@@ -54,7 +54,7 @@ router.post('/', (req, res) => {
   // Создание задачи
   const todo = createTodo(title.trim());
   // Возвращение созданной задачи
-  res.status(201).json({ todo });
+  return res.status(201).json({ todo });
 });
 
 // Запрос PUT PATCH на обновление задачи

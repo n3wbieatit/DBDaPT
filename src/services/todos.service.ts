@@ -3,6 +3,8 @@ export type Todo = {
   id: number;
   title: string;
   done: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
 
 // Последовательность
@@ -26,6 +28,8 @@ function createTodo(title: Todo['title']): Todo {
     id: sequence++,
     title,
     done: false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
   store.set(todo.id, todo);
   return todo;
@@ -36,6 +40,7 @@ function updateTodo(id: Todo['id'], title: Todo['title']): Todo | undefined {
   const todo = store.get(id);
   if (todo) {
     todo.title = title;
+    todo.updatedAt = new Date().toISOString();
     store.set(id, todo);
   }
   return todo;
@@ -49,6 +54,7 @@ function toggleTodo(id: Todo['id']): Todo | undefined {
   if (todo) {
     // Изменение статуса на противоположный
     todo.done = !todo.done;
+    todo.updatedAt = new Date().toISOString();
     // Сохранение
     store.set(id, todo);
   }
