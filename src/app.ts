@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import express from 'express';
 
+import categoryRouter from './routes/category.router';
 import healthRouter from './routes/health.router';
 import todoRouter from './routes/todos.router';
 
@@ -17,6 +18,7 @@ export function buildApp() {
   // Маршруты (routes)
   app.use('/health', healthRouter);
   app.use('/todo', todoRouter);
+  app.use('/category', categoryRouter);
 
   // 404
   app.use((_req, res) => {
