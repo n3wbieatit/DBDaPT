@@ -1,56 +1,139 @@
 import { Router } from 'express';
 
-import { createTodo, listTodos, removeTodo, toggleTodo } from '../services/todos.service';
+import {
+  listTodo,
+  getTodo,
+  createTodo,
+  updateTodo,
+  removeTodo,
+  toggleTodo,
+} from '../services/todos.service';
 
 const router = Router();
 
 // Запрос GET на получение задач
-router.get('/', (_request, response) => {
-  response.json(listTodos());
+router.get('/', (_req, res) => {
+  res.json(listTodo());
+});
+
+// Запрос GET на получение конкретной задачи
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  // Проверка на число
+  if (isNaN(Number(id))) {
+    return res.status(400).json({ message: 'Id must be a number' });
+  }
+  const todo = getTodo(Number(id));
+  // Проверка на наличие
+  if (!todo) {
+    return res.status(404).json({ message: 'Todo not found' });
+  }
+  return res.json({ todo });
 });
 
 // Запрос POST на создание задачи
-router.post('/', (request, response) => {
+router.post('/', (req, res) => {
   // Получение title из тела запроса
-  const { title } = request.body ?? {};
-  // Если title не передан или не соответствует типу string, то возвращаем ошибку
-  if (typeof title !== 'string' || !title.trim()) {
-    return response.status(400).json({ error: 'title is required' });
+  const { title } = req.body ?? {};
+  // Валидация
+  /**
+   * Рассматриваемые случаи:
+   * - Отсутствие title,
+   * - Несоответствие типу string,
+   * - Пустой title (содержание),
+   */
+  if (!title) {
+    return res.status(400).json({ message: 'Title is required' });
+  }
+  if (typeof title !== 'string') {
+    return res.status(400).json({ message: 'Title must be a string' });
+  }
+  if (title.trim().length === 0) {
+    return res.status(400).json({ message: 'Title cannot be empty' });
   }
   // Создание задачи
   const todo = createTodo(title.trim());
   // Возвращение созданной задачи
-  response.status(201).json(todo);
+  res.status(201).json({ todo });
 });
 
-// Запрос POST на изменение статуса задачи по маршруту /todos/:id/toggle
-router.post('/:id/toggle', (request, response) => {
-  // Получение id задачи из запроса
-  const id = Number(request.params.id);
-  // Если число бесконечно, то возвращаем ошибку
-  if (!Number.isFinite(id)) return response.status(400).json({ error: 'invalid id' });
-
-  // Изменение статуса задачи
-  const todo = toggleTodo(id);
-  // Если задача не найдена, то возвращаем ошибку
-  if (!todo) return response.status(404).json({ error: 'not found' });
-  // Возвращение задачи
-  response.json(todo);
+// Запрос PUT PATCH на обновление задачи
+router.put('/:id', (req, res) => {
+  const { id } = req.params;
+  if (isNaN(Number(id))) {
+    return res.status(400).json({ message: 'Id must be number' });
+  }
+  const { title } = req.body ?? {};
+  if (!title) {
+    return res.status(400).json({ message: 'Title is required' });
+  }
+  if (typeof title !== 'string') {
+    return res.status(400).json({ message: 'Title must be a string' });
+  }
+  if (title.trim().length === 0) {
+    return res.status(400).json({ message: 'Title cannot be empty' });
+  }
+  const todo = getTodo(Number(id));
+  if (!todo) {
+    return res.status(404).json({ message: 'Todo not found' });
+  }
+  const updatedTodo = updateTodo(Number(id), title.trim());
+  return res.json({ todo: updatedTodo });
 });
 
-// Запрос DELETE на удаление задачи по маршруту /todos/:id
-router.delete('/:id', (request, response) => {
-  // Получение id задачи из запроса
-  const id = Number(request.params.id);
-  // Если число бесконечно, то возвращаем ошибку
-  if (!Number.isFinite(id)) return response.status(400).json({ error: 'invalid id' });
+router.patch('/:id', (req, res) => {
+  const { id } = req.params;
+  if (isNaN(Number(id))) {
+    return res.status(400).json({ message: 'Id must be number' });
+  }
+  const { title } = req.body ?? {};
+  if (!title) {
+    return res.status(400).json({ message: 'Title is required' });
+  }
+  if (typeof title !== 'string') {
+    return res.status(400).json({ message: 'Title must be a string' });
+  }
+  if (title.trim().length === 0) {
+    return res.status(400).json({ message: 'Title cannot be empty' });
+  }
+  const todo = getTodo(Number(id));
+  if (!todo) {
+    return res.status(404).json({ message: 'Todo not found' });
+  }
+  const updatedTodo = updateTodo(Number(id), title.trim());
+  return res.json({ todo: updatedTodo });
+});
 
-  // Удаление задачи
-  const ok = removeTodo(id);
-  // Если удаление не удалось, то возвращаем ошибку
-  if (!ok) return response.status(404).json({ error: 'not found' });
-  // Возвращение пустого ответа
-  response.status(204).send();
+// Запрос POST на изменение статуса задачи
+router.post('/:id/toggle', (req, res) => {
+  // Получение id задачи из запроса
+  const { id } = req.params;
+  // Если число бесконечно, то возвращаем ошибку
+  if (isNaN(Number(id))) {
+    return res.status(400).json({ message: 'Id must be a number' });
+  }
+  const todo = getTodo(Number(id));
+  if (!todo) {
+    return res.status(404).json({ message: 'Todo not found' });
+  }
+  const toggledTodo = toggleTodo(Number(id));
+  return res.json({ todo: toggledTodo });
+});
+
+// Запрос DELETE на удаление задачи по маршруту
+router.delete('/:id', (req, res) => {
+  // Получение id задачи из запроса
+  const { id } = req.params;
+  // Если число бесконечно, то возвращаем ошибку
+  if (isNaN(Number(id))) {
+    return res.status(400).json({ message: 'Id must be a number' });
+  }
+  const todo = getTodo(Number(id));
+  if (!todo) {
+    return res.status(404).json({ message: 'Todo not found' });
+  }
+  const deletedTodo = removeTodo(Number(id));
+  return res.json({ todo: deletedTodo });
 });
 
 export default router;

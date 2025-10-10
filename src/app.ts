@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 import express from 'express';
 
 import healthRouter from './routes/health.router';
-import todosRouter from './routes/todos.router';
+import todoRouter from './routes/todos.router';
 
 // Получение переменных из .env
 config();
@@ -16,26 +16,26 @@ export function buildApp() {
 
   // Маршруты (routes)
   app.use('/health', healthRouter);
-  app.use('/api/todos', todosRouter);
+  app.use('/todo', todoRouter);
 
   // 404
-  app.use((_request, response) => {
+  app.use((_req, res) => {
     // Задание статуса ответа 404 и отправка в виде json
-    response.status(404).json({ error: 'Not found' });
+    res.status(404).json({ message: 'Not found' });
   });
 
   // Ошибки
   app.use(
     (
       err: unknown,
-      _request: express.Request,
-      response: express.Response,
+      _req: express.Request,
+      res: express.Response,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _next: express.NextFunction,
     ) => {
       console.error(err);
       // Задание статуса ответа 500 и отправка в виде json
-      response.status(500).json({ error: 'Internal server error' });
+      res.status(500).json({ message: 'Internal server error' });
     },
   );
 

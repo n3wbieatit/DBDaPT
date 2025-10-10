@@ -1,3 +1,4 @@
+// Определение типа данных задачи. Смахивает на interface
 export type Todo = {
   id: number;
   title: string;
@@ -6,35 +7,60 @@ export type Todo = {
 
 // Последовательность
 let sequence = 1;
-// Список (словарь?) задач
-const store = new Map<number, Todo>();
+// Хеш-таблица задач
+const store = new Map<Todo['id'], Todo>();
 
-// Получение массива задач
-export function listTodos(): Todo[] {
+// Получение списка задач
+function listTodo(): Todo[] {
   return Array.from(store.values());
 }
 
+// Получение конкретной задачи
+function getTodo(id: Todo['id']): Todo | undefined {
+  return store.get(id);
+}
+
 // Создание задачи
-export function createTodo(title: string): Todo {
-  const todo: Todo = { id: sequence++, title, done: false };
+function createTodo(title: Todo['title']): Todo {
+  const todo: Todo = {
+    id: sequence++,
+    title,
+    done: false,
+  };
   store.set(todo.id, todo);
   return todo;
 }
 
+// Обновление задачи
+function updateTodo(id: Todo['id'], title: Todo['title']): Todo | undefined {
+  const todo = store.get(id);
+  if (todo) {
+    todo.title = title;
+    store.set(id, todo);
+  }
+  return todo;
+}
+
 // Изменение статуса задачи
-export function toggleTodo(id: number): Todo | null {
+function toggleTodo(id: Todo['id']): Todo | undefined {
   // Получение задачи
   const todo = store.get(id);
   // Если задачи нет, то возвращаем null
-  if (!todo) return null;
-  // Изменение статуса на противоположный
-  todo.done = !todo.done;
-  // Сохранение
-  store.set(id, todo);
+  if (todo) {
+    // Изменение статуса на противоположный
+    todo.done = !todo.done;
+    // Сохранение
+    store.set(id, todo);
+  }
   return todo;
 }
 
 // Удаление задачи
-export function removeTodo(id: number): boolean {
-  return store.delete(id);
+function removeTodo(id: Todo['id']): Todo | undefined {
+  const todo = store.get(id);
+  // delete удаляет элемент и возвращает bool-результат выполнения
+  store.delete(id);
+  return todo;
 }
+
+export { listTodo, getTodo, createTodo, updateTodo, toggleTodo, removeTodo };
