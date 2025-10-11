@@ -7,6 +7,16 @@ let seq: number = 1;
 
 const store = new Map<Category['id'], Category>();
 
+store.set(1, {
+  id: 1,
+  name: 'Тест1',
+});
+
+store.set(2, {
+  id: 2,
+  name: 'Тест2',
+});
+
 // Получение массива категорий
 function listCategories(): Category[] {
   return Array.from(store.values());

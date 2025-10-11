@@ -1,3 +1,5 @@
+import { Category } from './category.service';
+
 // Определение типа данных задачи. Смахивает на interface
 export type Todo = {
   id: number;
@@ -5,6 +7,7 @@ export type Todo = {
   done: boolean;
   createdAt: string;
   updatedAt: string;
+  categoryId: number;
 };
 
 // Последовательность
@@ -23,24 +26,30 @@ function getTodo(id: Todo['id']): Todo | undefined {
 }
 
 // Создание задачи
-function createTodo(title: Todo['title']): Todo {
+function createTodo(title: Todo['title'], categoryId: Category['id']): Todo {
   const todo: Todo = {
     id: sequence++,
     title,
     done: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    categoryId,
   };
   store.set(todo.id, todo);
   return todo;
 }
 
 // Обновление задачи
-function updateTodo(id: Todo['id'], title: Todo['title']): Todo | undefined {
+function updateTodo(
+  id: Todo['id'],
+  title: Todo['title'],
+  categoryId: Category['id'],
+): Todo | undefined {
   const todo = store.get(id);
   if (todo) {
     todo.title = title;
     todo.updatedAt = new Date().toISOString();
+    todo.categoryId = categoryId;
     store.set(id, todo);
   }
   return todo;
