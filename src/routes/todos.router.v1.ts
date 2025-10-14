@@ -8,7 +8,7 @@ import {
   updateTodo,
   removeTodo,
   toggleTodo,
-} from '../services/todos.service';
+} from '../services/todos.service.v1';
 
 const router = Router();
 

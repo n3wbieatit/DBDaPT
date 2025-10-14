@@ -5,7 +5,7 @@ import {
   updateTodo,
   toggleTodo,
   removeTodo,
-} from '../src/services/todos.service';
+} from '../src/services/todos.service.v1';
 
 // Описание тестов: название, функции
 describe('todos service', () => {
