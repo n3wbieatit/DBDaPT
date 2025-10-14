@@ -1,6 +1,6 @@
 import { prisma } from '../db/prisma';
 
-import { Category } from './category.service';
+import { Category } from './category.service.v1';
 
 // Определение типа данных задачи. Смахивает на interface
 export type Todo = {

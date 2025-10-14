@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { getCategory } from '../services/category.service';
+import { getCategory } from '../services/category.service.v1';
 import {
   listTodo,
   getTodo,

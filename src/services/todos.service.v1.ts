@@ -1,4 +1,4 @@
-import { Category } from './category.service';
+import { Category } from './category.service.v1';
 
 // Определение типа данных задачи. Смахивает на interface
 export type Todo = {

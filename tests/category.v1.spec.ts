@@ -4,7 +4,7 @@ import {
   createCategory,
   updateCategory,
   removeCategory,
-} from '../src/services/category.service';
+} from '../src/services/category.service.v1';
 
 describe('category service', () => {
   // Тест на создание и получение задач
