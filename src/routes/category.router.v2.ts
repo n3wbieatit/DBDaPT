@@ -6,30 +6,30 @@ import {
   createCategory,
   updateCategory,
   removeCategory,
-} from '../services/category.service.v1';
+} from '../services/category.service.v2';
 
 const router = Router();
 
 // Запрос на получение категорий
-router.get('/', (_req, res) => {
-  res.json(listCategories());
+router.get('/', async (_req, res) => {
+  res.json({ list: await listCategories() });
 });
 
 // Запрос на получение конкретной категории
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
   if (isNaN(Number(id))) {
     res.status(400).json({ message: 'Id must be a number' });
   }
-  const category = getCategory(Number(id));
+  const category = await getCategory(Number(id));
   if (!category) {
     res.status(404).json({ message: 'Category not found' });
   }
-  res.json({ category });
+  res.status(201).json({ category });
 });
 
 // Запрос на создание категории
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { name } = req.body ?? {};
   if (!name) {
     res.status(400).json({ message: 'Category is required' });
@@ -40,12 +40,12 @@ router.post('/', (req, res) => {
   if (name.trim().length === 0) {
     res.status(400).json({ message: 'Name cannot be empty' });
   }
-  const category = createCategory(name.trim());
+  const category = await createCategory(name.trim());
   res.json({ category });
 });
 
 // Запрос на обновление категории
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   const { id } = req.params;
   if (isNaN(Number(id))) {
     res.status(400).json({ message: 'Id must be a number' });
@@ -60,15 +60,15 @@ router.put('/:id', (req, res) => {
   if (name.trim().length === 0) {
     res.status(400).json({ message: 'Name cannot be empty' });
   }
-  const category = getCategory(Number(id));
+  const category = await getCategory(Number(id));
   if (!category) {
     return res.status(404).json({ message: 'Category not found' });
   }
-  const updatedCategory = updateCategory(Number(id), name.trim());
+  const updatedCategory = await updateCategory(Number(id), name.trim());
   return res.json({ category: updatedCategory });
 });
 
-router.patch('/:id', (req, res) => {
+router.patch('/:id', async (req, res) => {
   const { id } = req.params;
   if (isNaN(Number(id))) {
     return res.status(400).json({ message: 'Id must be a number' });
@@ -83,25 +83,25 @@ router.patch('/:id', (req, res) => {
   if (name.trim().length === 0) {
     return res.status(400).json({ message: 'Name cannot be empty' });
   }
-  const category = getCategory(Number(id));
+  const category = await getCategory(Number(id));
   if (!category) {
     return res.status(404).json({ message: 'Category not found' });
   }
-  const updatedCategory = updateCategory(Number(id), name.trim());
+  const updatedCategory = await updateCategory(Number(id), name.trim());
   return res.json({ category: updatedCategory });
 });
 
 // Запрос на удаление категории
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   if (isNaN(Number(id))) {
     return res.status(400).json({ message: 'Id must be a number' });
   }
-  const category = getCategory(Number(id));
+  const category = await getCategory(Number(id));
   if (!category) {
     return res.status(404).json({ message: 'Category not found' });
   }
-  const deletedCategory = removeCategory(Number(id));
+  const deletedCategory = await removeCategory(Number(id));
   return res.json({ category: deletedCategory });
 });
 
