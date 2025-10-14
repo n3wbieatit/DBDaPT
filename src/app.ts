@@ -4,6 +4,7 @@ import express from 'express';
 import categoryRouterV1 from './routes/category.router.v1';
 import healthRouter from './routes/health.router';
 import todoRouterV1 from './routes/todos.router.v1';
+import todoRouterV2 from './routes/todos.router.v2';
 
 // Получение переменных из .env
 config();
@@ -18,6 +19,7 @@ export function buildApp() {
   // Маршруты (routes)
   app.use('/health', healthRouter);
   app.use('/v1/todo', todoRouterV1);
+  app.use('/v2/todo', todoRouterV2);
   app.use('/v1/category', categoryRouterV1);
 
   // 404

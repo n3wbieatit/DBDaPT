@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { getCategory } from '../services/category.service.v1';
+import { getCategory } from '../services/category.service.v2';
 import {
   listTodo,
   getTodo,
@@ -8,23 +8,23 @@ import {
   updateTodo,
   removeTodo,
   toggleTodo,
-} from '../services/todos.service.v1';
+} from '../services/todos.service.v2';
 
 const router = Router();
 
 // Запрос GET на получение задач
-router.get('/', (_req, res) => {
-  res.json(listTodo());
+router.get('/', async (_req, res) => {
+  res.json({ list: await listTodo() });
 });
 
 // Запрос GET на получение конкретной задачи
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
   // Проверка на число
   if (isNaN(Number(id))) {
     return res.status(400).json({ message: 'Id must be a number' });
   }
-  const todo = getTodo(Number(id));
+  const todo = await getTodo(Number(id));
   // Проверка на наличие
   if (!todo) {
     return res.status(404).json({ message: 'Todo not found' });
@@ -33,16 +33,10 @@ router.get('/:id', (req, res) => {
 });
 
 // Запрос POST на создание задачи
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // Получение title из тела запроса
   const { title, categoryId } = req.body ?? {};
   // Валидация
-  /**
-   * Рассматриваемые случаи:
-   * - Отсутствие title,
-   * - Несоответствие типу string,
-   * - Пустой title (содержание),
-   */
   if (!title) {
     return res.status(400).json({ message: 'Title is required' });
   }
@@ -53,13 +47,13 @@ router.post('/', (req, res) => {
     return res.status(400).json({ message: 'Title cannot be empty' });
   }
   // Создание задачи
-  const todo = createTodo(title.trim(), categoryId);
+  const todo = await createTodo(title.trim(), categoryId);
   // Возвращение созданной задачи
   return res.status(201).json({ todo });
 });
 
 // Запрос PUT PATCH на обновление задачи
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   const { id } = req.params;
   if (isNaN(Number(id))) {
     return res.status(400).json({ message: 'Id must be number' });
@@ -77,19 +71,19 @@ router.put('/:id', (req, res) => {
   if (isNaN(Number(categoryId))) {
     return res.status(400).json({ message: 'CategoryId must be a number' });
   }
-  const category = getCategory(Number(categoryId));
+  const category = await getCategory(Number(categoryId));
   if (!category) {
     return res.status(404).json({ message: 'Category not found' });
   }
-  const todo = getTodo(Number(id));
+  const todo = await getTodo(Number(id));
   if (!todo) {
     return res.status(404).json({ message: 'Todo not found' });
   }
-  const updatedTodo = updateTodo(Number(id), title.trim(), Number(categoryId));
+  const updatedTodo = await updateTodo(Number(id), title.trim(), Number(categoryId));
   return res.json({ todo: updatedTodo });
 });
 
-router.patch('/:id', (req, res) => {
+router.patch('/:id', async (req, res) => {
   const { id } = req.params;
   if (isNaN(Number(id))) {
     return res.status(400).json({ message: 'Id must be number' });
@@ -107,47 +101,47 @@ router.patch('/:id', (req, res) => {
   if (isNaN(Number(categoryId))) {
     return res.status(400).json({ message: 'CategoryId must be a number' });
   }
-  const category = getCategory(Number(categoryId));
+  const category = await getCategory(Number(categoryId));
   if (!category) {
     return res.status(404).json({ message: 'Category not found' });
   }
-  const todo = getTodo(Number(id));
+  const todo = await getTodo(Number(id));
   if (!todo) {
     return res.status(404).json({ message: 'Todo not found' });
   }
-  const updatedTodo = updateTodo(Number(id), title.trim(), Number(categoryId));
+  const updatedTodo = await updateTodo(Number(id), title.trim(), Number(categoryId));
   return res.json({ todo: updatedTodo });
 });
 
 // Запрос POST на изменение статуса задачи
-router.post('/:id/toggle', (req, res) => {
+router.post('/:id/toggle', async (req, res) => {
   // Получение id задачи из запроса
   const { id } = req.params;
   // Если число бесконечно, то возвращаем ошибку
   if (isNaN(Number(id))) {
     return res.status(400).json({ message: 'Id must be a number' });
   }
-  const todo = getTodo(Number(id));
+  const todo = await getTodo(Number(id));
   if (!todo) {
     return res.status(404).json({ message: 'Todo not found' });
   }
-  const toggledTodo = toggleTodo(Number(id));
+  const toggledTodo = await toggleTodo(Number(id));
   return res.json({ todo: toggledTodo });
 });
 
 // Запрос DELETE на удаление задачи по маршруту
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // Получение id задачи из запроса
   const { id } = req.params;
   // Если число бесконечно, то возвращаем ошибку
   if (isNaN(Number(id))) {
     return res.status(400).json({ message: 'Id must be a number' });
   }
-  const todo = getTodo(Number(id));
+  const todo = await getTodo(Number(id));
   if (!todo) {
     return res.status(404).json({ message: 'Todo not found' });
   }
-  const deletedTodo = removeTodo(Number(id));
+  const deletedTodo = await removeTodo(Number(id));
   return res.json({ todo: deletedTodo });
 });
 
