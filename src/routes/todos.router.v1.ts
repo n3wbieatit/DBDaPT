@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { getCategory } from '../services/category.service.v1';
 import {
   listTodo,
   getTodo,
@@ -7,7 +8,7 @@ import {
   updateTodo,
   removeTodo,
   toggleTodo,
-} from '../services/todos.service';
+} from '../services/todos.service.v1';
 
 const router = Router();
 
@@ -34,7 +35,7 @@ router.get('/:id', (req, res) => {
 // Запрос POST на создание задачи
 router.post('/', (req, res) => {
   // Получение title из тела запроса
-  const { title } = req.body ?? {};
+  const { title, categoryId } = req.body ?? {};
   // Валидация
   /**
    * Рассматриваемые случаи:
@@ -52,9 +53,9 @@ router.post('/', (req, res) => {
     return res.status(400).json({ message: 'Title cannot be empty' });
   }
   // Создание задачи
-  const todo = createTodo(title.trim());
+  const todo = createTodo(title.trim(), categoryId);
   // Возвращение созданной задачи
-  res.status(201).json({ todo });
+  return res.status(201).json({ todo });
 });
 
 // Запрос PUT PATCH на обновление задачи
@@ -63,7 +64,7 @@ router.put('/:id', (req, res) => {
   if (isNaN(Number(id))) {
     return res.status(400).json({ message: 'Id must be number' });
   }
-  const { title } = req.body ?? {};
+  const { title, categoryId } = req.body ?? {};
   if (!title) {
     return res.status(400).json({ message: 'Title is required' });
   }
@@ -73,11 +74,18 @@ router.put('/:id', (req, res) => {
   if (title.trim().length === 0) {
     return res.status(400).json({ message: 'Title cannot be empty' });
   }
+  if (isNaN(Number(categoryId))) {
+    return res.status(400).json({ message: 'CategoryId must be a number' });
+  }
+  const category = getCategory(Number(categoryId));
+  if (!category) {
+    return res.status(404).json({ message: 'Category not found' });
+  }
   const todo = getTodo(Number(id));
   if (!todo) {
     return res.status(404).json({ message: 'Todo not found' });
   }
-  const updatedTodo = updateTodo(Number(id), title.trim());
+  const updatedTodo = updateTodo(Number(id), title.trim(), Number(categoryId));
   return res.json({ todo: updatedTodo });
 });
 
@@ -86,7 +94,7 @@ router.patch('/:id', (req, res) => {
   if (isNaN(Number(id))) {
     return res.status(400).json({ message: 'Id must be number' });
   }
-  const { title } = req.body ?? {};
+  const { title, categoryId } = req.body ?? {};
   if (!title) {
     return res.status(400).json({ message: 'Title is required' });
   }
@@ -96,11 +104,18 @@ router.patch('/:id', (req, res) => {
   if (title.trim().length === 0) {
     return res.status(400).json({ message: 'Title cannot be empty' });
   }
+  if (isNaN(Number(categoryId))) {
+    return res.status(400).json({ message: 'CategoryId must be a number' });
+  }
+  const category = getCategory(Number(categoryId));
+  if (!category) {
+    return res.status(404).json({ message: 'Category not found' });
+  }
   const todo = getTodo(Number(id));
   if (!todo) {
     return res.status(404).json({ message: 'Todo not found' });
   }
-  const updatedTodo = updateTodo(Number(id), title.trim());
+  const updatedTodo = updateTodo(Number(id), title.trim(), Number(categoryId));
   return res.json({ todo: updatedTodo });
 });
 

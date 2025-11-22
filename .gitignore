@@ -44,3 +44,19 @@ next-env.d.ts
 # notes
 COMMAND_HISTORY.md
 CONFIGURATION.md
+/src/generated/prisma
+prisma/dev.db
+prisma/test.db
+/src/generated/prisma
+
+/generated/prisma
+
+/src/generated/prisma
+
+/generated/prisma
+
+/generated/prisma
+
+/src/generated/prisma
+
+/src/generated/prisma
