@@ -7,7 +7,7 @@ type Category = {
 
 // Получение массива категорий
 async function listCategories() {
-  const categories = (await prisma.category.findMany({
+  const categories = (await prisma.Category.findMany({
     orderBy: {
       id: 'asc',
     },
@@ -20,7 +20,7 @@ async function listCategories() {
 
 // Получение конкретной категории
 async function getCategory(id: Category['id']) {
-  const found = (await prisma.category.findUnique({
+  const found = (await prisma.Category.findUnique({
     where: {
       id,
     },
@@ -36,7 +36,7 @@ async function getCategory(id: Category['id']) {
 
 // Создание категории
 async function createCategory(name: Category['name']) {
-  const category = (await prisma.category.create({
+  const category = (await prisma.Category.create({
     data: {
       name,
     },
@@ -49,7 +49,7 @@ async function createCategory(name: Category['name']) {
 
 // Обновление категории
 async function updateCategory(id: Category['id'], name: Category['name']) {
-  const found = await prisma.category.findUnique({
+  const found = await prisma.Category.findUnique({
     where: {
       id,
     },
@@ -57,7 +57,7 @@ async function updateCategory(id: Category['id'], name: Category['name']) {
   if (!found) {
     return null;
   }
-  const category = (await prisma.category.update({
+  const category = (await prisma.Category.update({
     where: {
       id,
     },
@@ -73,7 +73,7 @@ async function updateCategory(id: Category['id'], name: Category['name']) {
 
 // Удаление категории
 async function removeCategory(id: Category['id']) {
-  const category = (await prisma.category.findUnique({
+  const category = (await prisma.Category.findUnique({
     where: {
       id,
     },
@@ -81,7 +81,7 @@ async function removeCategory(id: Category['id']) {
   if (!category) {
     return null;
   }
-  await prisma.category.delete({
+  await prisma.Category.delete({
     where: {
       id,
     },

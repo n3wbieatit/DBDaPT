@@ -1,31 +1,31 @@
 import { prisma } from '../db/prisma';
 
-import { Category } from './category.service.v1';
+import { Category } from './category.service.v2';
 
 // Определение типа данных задачи. Смахивает на interface
 export type Todo = {
   id: number;
   title: string;
   done: boolean;
-  createdAt: string;
-  updatedAt: string;
-  categoryId: number;
+  created_at: Date;
+  updated_at: Date;
+  category_id: number;
 };
 
 // Получение списка задач
 async function listTodo() {
-  const todos = (await prisma.todo.findMany({
+  const todos = await prisma.todo.findMany({
     orderBy: {
       id: 'asc',
     },
-  })) as Todo[];
+  });
   return todos.map((todo) => ({
     id: todo.id,
     title: todo.title,
     done: todo.done,
-    createdAt: todo.createdAt,
-    updatedAt: todo.updatedAt,
-    categoryId: todo.categoryId,
+    created_at: todo.created_at,
+    updated_at: todo.updated_at,
+    category_id: todo.category_id,
   }));
 }
 
@@ -43,32 +43,32 @@ async function getTodo(id: Todo['id']) {
     id: found.id,
     title: found.title,
     done: found.done,
-    createdAt: found.createdAt,
-    updatedAt: found.updatedAt,
-    categoryId: found.categoryId,
+    created_at: found.created_at,
+    updated_at: found.updated_at,
+    category_id: found.category_id,
   };
 }
 
 // Создание задачи
-async function createTodo(title: Todo['title'], categoryId: Category['id']) {
+async function createTodo(title: Todo['title'], category_id: Category['id']) {
   const todo = (await prisma.todo.create({
     data: {
       title,
-      categoryId,
+      category_id,
     },
   })) as Todo;
   return {
     id: todo.id,
     title: todo.title,
     done: todo.done,
-    createdAt: todo.createdAt,
-    updatedAt: todo.updatedAt,
-    categoryId: todo.categoryId,
+    created_at: todo.created_at,
+    updated_at: todo.updated_at,
+    category_id: todo.category_id,
   };
 }
 
 // Обновление задачи
-async function updateTodo(id: Todo['id'], title: Todo['title'], categoryId: Category['id']) {
+async function updateTodo(id: Todo['id'], title: Todo['title'], category_id: Category['id']) {
   const found = await prisma.todo.findUnique({
     where: {
       id,
@@ -83,16 +83,16 @@ async function updateTodo(id: Todo['id'], title: Todo['title'], categoryId: Cate
     },
     data: {
       title,
-      categoryId,
+      category_id,
     },
   })) as Todo;
   return {
     id: todo.id,
     title: todo.title,
     done: todo.done,
-    createdAt: todo.createdAt,
-    updatedAt: todo.updatedAt,
-    categoryId: todo.categoryId,
+    created_at: todo.created_at,
+    updated_at: todo.updated_at,
+    category_id: todo.category_id,
   };
 }
 
@@ -118,9 +118,9 @@ async function toggleTodo(id: Todo['id']) {
     id: todo.id,
     title: todo.title,
     done: todo.done,
-    createdAt: todo.createdAt,
-    updatedAt: todo.updatedAt,
-    categoryId: todo.categoryId,
+    created_at: todo.created_at,
+    updated_at: todo.updated_at,
+    category_id: todo.category_id,
   };
 }
 
@@ -143,9 +143,9 @@ async function removeTodo(id: Todo['id']) {
     id: todo.id,
     title: todo.title,
     done: todo.done,
-    createdAt: todo.createdAt,
-    updatedAt: todo.updatedAt,
-    categoryId: todo.categoryId,
+    created_at: todo.created_at,
+    updated_at: todo.updated_at,
+    category_id: todo.category_id,
   };
 }
 
