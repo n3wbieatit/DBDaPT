@@ -46,8 +46,18 @@ router.post('/', async (req, res) => {
   if (title.trim().length === 0) {
     return res.status(400).json({ message: 'Title cannot be empty' });
   }
+  if (title.trim().length > 255) {
+    return res.status(400).json({ message: 'Title must be less than 255 characters' });
+  }
+  if (isNaN(Number(categoryId))) {
+    return res.status(400).json({ message: 'CategoryId must be a number' });
+  }
+  const category = await getCategory(Number(categoryId));
+  if (!category) {
+    return res.status(404).json({ message: 'Category not found' });
+  }
   // Создание задачи
-  const todo = await createTodo(title.trim(), categoryId);
+  const todo = await createTodo(title.trim(), Number(categoryId));
   // Возвращение созданной задачи
   return res.status(201).json({ todo });
 });
@@ -67,6 +77,9 @@ router.put('/:id', async (req, res) => {
   }
   if (title.trim().length === 0) {
     return res.status(400).json({ message: 'Title cannot be empty' });
+  }
+  if (title.trim().length > 255) {
+    return res.status(400).json({ message: 'Title must be less than 255 characters' });
   }
   if (isNaN(Number(categoryId))) {
     return res.status(400).json({ message: 'CategoryId must be a number' });
@@ -97,6 +110,9 @@ router.patch('/:id', async (req, res) => {
   }
   if (title.trim().length === 0) {
     return res.status(400).json({ message: 'Title cannot be empty' });
+  }
+  if (title.trim().length > 255) {
+    return res.status(400).json({ message: 'Title must be less than 255 characters' });
   }
   if (isNaN(Number(categoryId))) {
     return res.status(400).json({ message: 'CategoryId must be a number' });

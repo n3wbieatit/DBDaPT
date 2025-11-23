@@ -40,7 +40,13 @@ router.post('/', async (req, res) => {
   if (name.trim().length === 0) {
     res.status(400).json({ message: 'Name cannot be empty' });
   }
+  if (name.trim().length > 32) {
+    res.status(400).json({ message: 'Name must be less than 32 characters' });
+  }
   const category = await createCategory(name.trim());
+  if (!category) {
+    res.status(400).json({ message: 'Category already exists' });
+  }
   res.json({ category });
 });
 
@@ -59,6 +65,9 @@ router.put('/:id', async (req, res) => {
   }
   if (name.trim().length === 0) {
     res.status(400).json({ message: 'Name cannot be empty' });
+  }
+  if (name.trim().length > 32) {
+    res.status(400).json({ message: 'Name must be less than 32 characters' });
   }
   const category = await getCategory(Number(id));
   if (!category) {
@@ -82,6 +91,9 @@ router.patch('/:id', async (req, res) => {
   }
   if (name.trim().length === 0) {
     return res.status(400).json({ message: 'Name cannot be empty' });
+  }
+  if (name.trim().length > 32) {
+    res.status(400).json({ message: 'Name must be less than 32 characters' });
   }
   const category = await getCategory(Number(id));
   if (!category) {

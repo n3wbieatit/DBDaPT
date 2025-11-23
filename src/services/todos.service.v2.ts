@@ -7,35 +7,35 @@ export type Todo = {
   id: number;
   title: string;
   done: boolean;
-  created_at: Date;
-  updated_at: Date;
-  category_id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  categoryId: number;
 };
 
 // Получение списка задач
 async function listTodo() {
-  const todos = await prisma.todo.findMany({
+  const todos = (await prisma.todo.findMany({
     orderBy: {
       id: 'asc',
     },
-  });
+  })) as Todo[];
   return todos.map((todo) => ({
     id: todo.id,
     title: todo.title,
     done: todo.done,
-    created_at: todo.created_at,
-    updated_at: todo.updated_at,
-    category_id: todo.category_id,
+    created_at: todo.createdAt,
+    updated_at: todo.updatedAt,
+    category_id: todo.categoryId,
   }));
 }
 
 // Получение конкретной задачи
 async function getTodo(id: Todo['id']) {
-  const found = await prisma.todo.findUnique({
+  const found = (await prisma.todo.findUnique({
     where: {
       id,
     },
-  });
+  })) as Todo | null;
   if (!found) {
     return null;
   }
@@ -43,37 +43,37 @@ async function getTodo(id: Todo['id']) {
     id: found.id,
     title: found.title,
     done: found.done,
-    created_at: found.created_at,
-    updated_at: found.updated_at,
-    category_id: found.category_id,
+    created_at: found.createdAt,
+    updated_at: found.updatedAt,
+    category_id: found.categoryId,
   };
 }
 
 // Создание задачи
-async function createTodo(title: Todo['title'], category_id: Category['id']) {
+async function createTodo(title: Todo['title'], categoryId: Category['id']) {
   const todo = (await prisma.todo.create({
     data: {
       title,
-      category_id,
+      categoryId,
     },
   })) as Todo;
   return {
     id: todo.id,
     title: todo.title,
     done: todo.done,
-    created_at: todo.created_at,
-    updated_at: todo.updated_at,
-    category_id: todo.category_id,
+    created_at: todo.createdAt,
+    updated_at: todo.updatedAt,
+    category_id: todo.categoryId,
   };
 }
 
 // Обновление задачи
-async function updateTodo(id: Todo['id'], title: Todo['title'], category_id: Category['id']) {
-  const found = await prisma.todo.findUnique({
+async function updateTodo(id: Todo['id'], title: Todo['title'], categoryId: Category['id']) {
+  const found = (await prisma.todo.findUnique({
     where: {
       id,
     },
-  });
+  })) as Todo | null;
   if (!found) {
     return null;
   }
@@ -83,26 +83,26 @@ async function updateTodo(id: Todo['id'], title: Todo['title'], category_id: Cat
     },
     data: {
       title,
-      category_id,
+      categoryId,
     },
   })) as Todo;
   return {
     id: todo.id,
     title: todo.title,
     done: todo.done,
-    created_at: todo.created_at,
-    updated_at: todo.updated_at,
-    category_id: todo.category_id,
+    created_at: todo.createdAt,
+    updated_at: todo.updatedAt,
+    category_id: todo.categoryId,
   };
 }
 
 // Изменение статуса задачи
 async function toggleTodo(id: Todo['id']) {
-  const found = await prisma.todo.findUnique({
+  const found = (await prisma.todo.findUnique({
     where: {
       id,
     },
-  });
+  })) as Todo | null;
   if (!found) {
     return null;
   }
@@ -118,19 +118,19 @@ async function toggleTodo(id: Todo['id']) {
     id: todo.id,
     title: todo.title,
     done: todo.done,
-    created_at: todo.created_at,
-    updated_at: todo.updated_at,
-    category_id: todo.category_id,
+    created_at: todo.createdAt,
+    updated_at: todo.updatedAt,
+    category_id: todo.categoryId,
   };
 }
 
 // Удаление задачи
 async function removeTodo(id: Todo['id']) {
-  const found = await prisma.todo.findUnique({
+  const found = (await prisma.todo.findUnique({
     where: {
       id,
     },
-  });
+  })) as Todo | null;
   if (!found) {
     return null;
   }
@@ -143,9 +143,9 @@ async function removeTodo(id: Todo['id']) {
     id: todo.id,
     title: todo.title,
     done: todo.done,
-    created_at: todo.created_at,
-    updated_at: todo.updated_at,
-    category_id: todo.category_id,
+    created_at: todo.createdAt,
+    updated_at: todo.updatedAt,
+    category_id: todo.categoryId,
   };
 }
 
