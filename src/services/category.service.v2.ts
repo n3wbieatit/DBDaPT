@@ -97,6 +97,11 @@ async function removeCategory(id: Category['id']) {
   if (!category) {
     return null;
   }
+  await prisma.todo.deleteMany({
+    where: {
+      categoryId: id,
+    },
+  });
   await prisma.category.delete({
     where: {
       id,
