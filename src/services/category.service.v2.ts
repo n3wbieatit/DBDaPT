@@ -34,16 +34,24 @@ async function getCategory(id: Category['id']) {
   };
 }
 
-// Создание категории
-async function createCategory(name: Category['name']) {
+// Получение конкретной категории по названию
+async function getCategoryByName(name: Category['name']) {
   const found = (await prisma.category.findUnique({
     where: {
       name,
     },
   })) as Category | null;
-  if (found) {
+  if (!found) {
     return null;
   }
+  return {
+    id: found.id,
+    name: found.name,
+  };
+}
+
+// Создание категории
+async function createCategory(name: Category['name']) {
   const category = (await prisma.category.create({
     data: {
       name,
@@ -100,4 +108,12 @@ async function removeCategory(id: Category['id']) {
   };
 }
 
-export { Category, listCategories, getCategory, createCategory, updateCategory, removeCategory };
+export {
+  Category,
+  listCategories,
+  getCategory,
+  getCategoryByName,
+  createCategory,
+  updateCategory,
+  removeCategory,
+};

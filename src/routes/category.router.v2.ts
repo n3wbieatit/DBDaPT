@@ -3,6 +3,7 @@ import { Router } from 'express';
 import {
   listCategories,
   getCategory,
+  getCategoryByName,
   createCategory,
   updateCategory,
   removeCategory,
@@ -43,10 +44,11 @@ router.post('/', async (req, res) => {
   if (name.trim().length > 32) {
     res.status(400).json({ message: 'Name must be less than 32 characters' });
   }
-  const category = await createCategory(name.trim());
-  if (!category) {
+  const found = await getCategoryByName(name.trim());
+  if (found) {
     res.status(400).json({ message: 'Category already exists' });
   }
+  const category = await createCategory(name.trim());
   res.json({ category });
 });
 
@@ -73,6 +75,10 @@ router.put('/:id', async (req, res) => {
   if (!category) {
     return res.status(404).json({ message: 'Category not found' });
   }
+  const found = await getCategoryByName(name);
+  if (found) {
+    res.status(400).json({ message: 'Category already exists' });
+  }
   const updatedCategory = await updateCategory(Number(id), name.trim());
   return res.json({ category: updatedCategory });
 });
@@ -98,6 +104,10 @@ router.patch('/:id', async (req, res) => {
   const category = await getCategory(Number(id));
   if (!category) {
     return res.status(404).json({ message: 'Category not found' });
+  }
+  const found = await getCategoryByName(name);
+  if (found) {
+    res.status(400).json({ message: 'Category already exists' });
   }
   const updatedCategory = await updateCategory(Number(id), name.trim());
   return res.json({ category: updatedCategory });
